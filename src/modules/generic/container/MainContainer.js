@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, Image } from 'react-native';
 import { Touchable } from '../component/Touchable';
+import { ActionButton } from '../component/Button';
 import styles from '../asset/styles';
 
 class MainContainer extends React.Component{
@@ -11,9 +12,8 @@ class MainContainer extends React.Component{
 		navigate(key);
 	}
 
-	componentDidMount(){
-		const { navigate } = this.props.navigation;
-		navigate("DrawerOpen");
+	handleAdd = () => {
+		console.log("CLICK!");
 	}
 
 	render(){
@@ -25,13 +25,15 @@ class MainContainer extends React.Component{
 		}
 
 		return(
-			<View>
+			<View style={ styles.containerWrapper }>
 				<Touchable
 		            onPress={ this.handleNavigate('Sub') }>
 					<View>
-						<Text style={ textStyle }>Go sub page</Text>
+						<Text style={ textStyle }>// insert home page here</Text>
 					</View>
 				</Touchable>
+				<ActionButton 
+					onPress={ this.handleAdd }/>
 			</View>
 		)
 	}

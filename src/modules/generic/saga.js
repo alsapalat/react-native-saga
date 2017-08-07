@@ -5,7 +5,7 @@ import { preloader, navigateTo } from '../../Utils';
 function* splash(){
 	yield put(preloader('SPLASH'));
 
-	yield delay(1500);
+	//yield delay(1500);
 
 	yield put(preloader(null));
 

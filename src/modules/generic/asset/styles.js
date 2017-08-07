@@ -43,5 +43,16 @@ export default StyleSheet.create({
 	drawerIcon: {
 	    width: 24,
 	    height: 24,
+	},
+	containerWrapper: {
+		height: "100%",
+		width: "100%",
+	},
+	listItem: {
+		height: 60,
+		borderBottomWidth: 1,
+		textAlignVertical: "center",
+		padding: 10,
+		backgroundColor: "#fff"
 	}
 })
