@@ -2,15 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, Image } from 'react-native';
 
-class ListContainer extends React.Component{
+class Tab3Container extends React.Component{
 
 	render(){
+
 		return(
 			<View>
-				<Text>//add here...</Text>
+				<Text>//tab 3 here...</Text>
 			</View>
 		)
 	}
 }
 
-export default ListContainer;
+export default Tab3Container;

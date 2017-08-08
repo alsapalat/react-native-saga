@@ -6,14 +6,13 @@ import { View } from 'react-native';
 
 import AppDrawer from './AppDrawer';
 import SplashContainer from './modules/generic/container/SplashContainer';
-import MainContainer from './modules/generic/container/MainContainer';
-import SubContainer from './modules/generic/container/SubContainer';
 
 import CrudNavigator from './modules/crud/Navigator';
+import TabNavigator from './modules/tabbed-crud/Navigator';
 
 export const AppNavigator = DrawerNavigator({
 	Main: { screen: CrudNavigator },
-	Sub: { screen: MainContainer }
+	Tab: { screen: TabNavigator }
 },{
 	contentComponent: props => <AppDrawer { ...props }/>
 })

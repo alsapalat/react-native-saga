@@ -44,15 +44,24 @@ export default StyleSheet.create({
 	    width: 24,
 	    height: 24,
 	},
+	drawerButton: {
+		marginLeft: 10,
+		paddingLeft: 10,
+		width: 100
+	},
 	containerWrapper: {
 		height: "100%",
 		width: "100%",
 	},
-	listItem: {
+	listItemWrapper: {
 		height: 60,
-		borderBottomWidth: 1,
+		borderBottomWidth: 1,	
+		borderBottomColor: "#aaa"
+	},
+	listItem: {
+		height: "100%",
+		width: "100%",
 		textAlignVertical: "center",
 		padding: 10,
-		backgroundColor: "#fff"
 	}
 })

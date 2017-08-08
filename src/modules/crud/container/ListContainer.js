@@ -5,13 +5,17 @@ import { ActionButton } from '../../generic/component/Button';
 import { Touchable } from '../../generic/component/Touchable';
 import styles from '../../generic/asset/styles';
 
+import { MODULE_KEY } from '../constant';
+
 const ListItem = ({ data, onPress }) => {
 	return (
-		<Touchable onPress={ onPress }>
-			<View>
-				<Text style={ styles.listItem }>{ data.key }</Text>
-			</View>
-		</Touchable>
+		<View style={ styles.listItemWrapper }>
+			<Touchable onPress={ onPress }>
+				<View>
+					<Text style={ styles.listItem }>{ data.key }</Text>	
+				</View>
+			</Touchable>
+		</View>
 	)
 } 
 
@@ -19,12 +23,12 @@ class ListContainer extends React.Component{
 
 	handleAdd = () => {
 		const { navigate } = this.props.navigation;
-		navigate("Add");
+		navigate(`${MODULE_KEY}_Add`);
 	}
 
 	handleView = (data) => () => {
 		const { navigate } = this.props.navigation;
-		navigate("View", data);
+		navigate(`${MODULE_KEY}_View`, data);
 	}
 
 	render(){
@@ -32,24 +36,35 @@ class ListContainer extends React.Component{
 			<View style={ styles.containerWrapper }>
 				<FlatList
 					data={[
-						{ key: 'Devin' },
-						{ key: 'Jackson' },
-						{ key: 'James' },
-						{ key: 'Joel' },
-						{ key: 'John' },
-						{ key: 'Jillian' },
-						{ key: 'Jimmy' },
-						{ key: 'Julie' },
+						{ key: 'Item 1' },
+						{ key: 'Item 2' },
+						{ key: 'Item 3' },
+						{ key: 'Item 4' },
+						{ key: 'Item 5' },
+						{ key: 'Item 6' },
+						{ key: 'Item 7' },
+						{ key: 'Item 8' },
+						{ key: 'Item 9' },
+						{ key: 'Item 10' },
+						{ key: 'Item 12' },
+						{ key: 'Item 13' },
+						{ key: 'Item 14' },
+						{ key: 'Item 15' },
+						{ key: 'Item 16' },
+						{ key: 'Item 17' },
+						{ key: 'Item 18' },
+						{ key: 'Item 19' },
+						{ key: 'Item 20' },
 					]}
-					renderItem={({ item }) => <ListItem data={ item } onPress={ this.handleView(item) }/>} />
+					renderItem={({ item }) => {
+						return(
+							<ListItem data={ item } onPress={ this.handleView(item) }/>
+						)
+					}} />
 				<ActionButton onPress={ this.handleAdd } />
 			</View>
 		)
 	}
 }
-
-ListContainer.navigationOptions = {
-	title: 'LISTING',
-};
 
 export default ListContainer;

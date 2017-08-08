@@ -16,8 +16,4 @@ class ListContainer extends React.Component{
 	}
 }
 
-ListContainer.navigationOptions = {
-	title: 'VIEW',
-};
-
 export default ListContainer;
