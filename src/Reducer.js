@@ -62,7 +62,8 @@ const nav = (state = INIT_NAV_STATE, action) => {
 const appReducers = combineReducers({
 	//module: require('./modules/module/reducer')
 	app,
-	nav
+	nav,
+	edtr: require('./modules/e-dtr/reducer'),
 })
 
 export default appReducers;

@@ -10,6 +10,10 @@ function* splash(){
 	yield put(preloader(null));
 
 	yield put({ type: "HAS_INIT", has_init: true });
+
+	yield delay(50);
+
+	yield put({ type: "NAVIGATE_TO", key: "EDTR" });
 }
 
 export default function* genericSaga(){

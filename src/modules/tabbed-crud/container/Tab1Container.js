@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, TextInput, Picker, Switch, Slider, Modal, Button, Alert } from 'react-native';
 import { Touchable } from '../../generic/component/Touchable';
+import { Fingerprint } from 'expo';
 
 class Tab1Container extends React.Component{
 
@@ -128,11 +129,63 @@ class Tab1Container extends React.Component{
 							<Button title="Send Alert!" onPress={ this.handleSendAlert }/>
 						</Touchable>
 						<Text>...</Text>
+						
+						<FingerAuth />
+
 						<Touchable>
 							<Button title="Close Modal" onPress={ this.handleCloseModal }/>
 						</Touchable>
 					</View>
 				</Modal>
+			</View>
+		)
+	}
+}
+
+class FingerAuth extends React.Component{
+
+	state = {
+		status: '',
+		hasHardware: false,
+		hasFingers: false,
+		isScanning: false
+	}
+
+	async componentDidMount(){
+		const hasHardware = await Fingerprint.hasHardwareAsync();
+		const hasFingers = await Fingerprint.isEnrolledAsync();
+
+		this.setState({
+			status: `hardware: ${hasHardware ? "YES" : "NO"} fingers: ${hasFingers ? "YES" : "NO"}`
+		})
+	}
+
+	handleStartScan = async () => {
+		this.setState({
+			isScanning: true
+		})
+
+		const data = await Fingerprint.authenticateAsync();
+
+		console.log(data);
+
+		this.setState({
+			isScanning: false
+		})
+	}
+
+	render(){
+
+		const { hasHardware, hasFingers } = this.state;
+
+		return(
+			<View>
+				<Text>{ this.state.status }</Text>
+				{ (hasHardware && hasFingers) &&
+					<Button 
+						title={ this.state.isScanning ? "finger please" : "Start Scan" }
+						onPress={ this.handleStartScan }/>
+				}
 			</View>
 		)
 	}

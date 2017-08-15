@@ -9,10 +9,14 @@ import SplashContainer from './modules/generic/container/SplashContainer';
 
 import CrudNavigator from './modules/crud/Navigator';
 import TabNavigator from './modules/tabbed-crud/Navigator';
+import ExpensesNavigator from './modules/expenses/Navigator';
+import EDTRNavigator from './modules/e-dtr/Navigator';
 
 export const AppNavigator = DrawerNavigator({
 	Main: { screen: CrudNavigator },
-	Tab: { screen: TabNavigator }
+	Tab: { screen: TabNavigator },
+	Expenses: { screen: ExpensesNavigator },
+	EDTR: { screen: EDTRNavigator }
 },{
 	contentComponent: props => <AppDrawer { ...props }/>
 })

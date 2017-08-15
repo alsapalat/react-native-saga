@@ -19,6 +19,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "axios": "^0.16.1",
     "expo": "^19.0.0",
     "prop-types": "^15.5.10",
     "react": "16.0.0-alpha.12",
