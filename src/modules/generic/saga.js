@@ -13,7 +13,7 @@ function* splash(){
 
 	yield delay(50);
 
-	yield put({ type: "NAVIGATE_TO", key: "EDTR" });
+	yield put({ type: "NAVIGATE_TO", key: "EXPENSES" });
 }
 
 export default function* genericSaga(){

@@ -13,82 +13,73 @@ class Wizard extends React.Component{
 		last_step: 0
 	}
 
-	handleGoToStep = (nextStep) => {
-		const { last_step } = this.state;
-		const { step, onChangeStep } = this.props;
+	componentWillReceiveProps(props){
+		if(!_.isEqual(props.step, this.props.step)){
+			const { last_step } = this.state;
+			this.setState({
+				last_step: (props.step > last_step) ? props.step : last_step
+			})
+		}
+	}
 
+	handleGoToStep = (nextStep) => {
+		const { onChangeStep } = this.props;
 		onChangeStep({ nextStep });
-		this.setState({
-			last_step: (nextStep > last_step) ? nextStep : last_step
-		})
 	}
 
 	handlePrevStep = () => {
-		const { last_step } = this.state;
 		const { step, onChangeStep } = this.props;
-
 		if(step < 1) return;
-		
-		const nextStep = step - 1
-
+		const nextStep = step - 1;
 		onChangeStep({ nextStep });
-
-		this.setState({
-			last_step: (nextStep > last_step) ? nextStep : last_step
-		})
 	}
 
 	handleNextStep = () => {
-		const { last_step } = this.state;
 		const { steps, step, onChangeStep } = this.props;
 		if(step > steps.length - 2) return;
-		
 		const nextStep = step + 1
-
 		onChangeStep({ nextStep });
-
-		this.setState({
-			last_step: (nextStep > last_step) ? nextStep : last_step
-		})
 	}
 
 	render(){
 
-		const { steps, step } = this.props;
-
+		const { steps, step, cancelComponent, submitComponent, onCancel, onSubmit } = this.props;
+		
 		const components = steps.map(s => s.component);
+
+		const visibleStyle = (isHidden) => !isHidden ? styles.hidden : {}
+
+		const { last_step } = this.state;
 
 		return(
 			<View style={ styles.wrapper }>
 				<WizardHeader 
 					steps={ steps }
 					step={ step }
-					lastStep={ this.state.last_step }
+					lastStep={ last_step }
 					onGoToStep={ this.handleGoToStep }/>
 				<View style={ styles.body }>
-					<ScrollView>	
-						<Text>BODY HERE</Text>
-						<WizardBody
-							step={ step }
-							components={ components } />
-					</ScrollView>
+					<WizardBody
+						step={ step }
+						components={ components } />
 				</View>
+
 				<View style={ styles.footer }>
 					<TouchableOpacity
-						onPress={ this.handlePrevStep }>
-						<View style={ styles.footerButton }>
+						onPress={ step === 0 ? onCancel : this.handlePrevStep }>
+						<View style={ [ styles.footerButton ] }>
 							<Ionicons  
-								name="md-arrow-round-back" 
-								size={32} 
+								name={ step === 0 ? "md-close-circle" : "md-arrow-dropleft-circle" }
+								size={48} 
 								color="grey" />
 						</View>
 					</TouchableOpacity>
 					<TouchableOpacity
-						onPress={ this.handleNextStep }>
-						<View style={ styles.footerButton }>
+						onPress={ step === (steps.length - 1) ? onSubmit : this.handleNextStep }>
+						<View style={ [ styles.footerButton, (step >= last_step) ? styles.hidden : {} ] }>
 							<Ionicons  
-								name="md-arrow-round-forward" 
-								size={32} 
+								name={ step === (steps.length - 1) ? "md-checkmark-circle": "md-arrow-dropright-circle" }
+								size={48} 
 								color="grey" />
 						</View>
 					</TouchableOpacity>
@@ -161,7 +152,7 @@ class WizardHeader extends React.Component{
 				<ScrollView 
 					ref={ ref => this.wizHeader = ref }
 					horizontal={ true } 
-					showsHorizontalScrollIndicator={ false}>	
+					showsHorizontalScrollIndicator={ false }>	
 					{ steps.map((item, i) => {
 						const stepStyle = this.getStepStyle(step, lastStep, i)
 						return(
@@ -182,20 +173,42 @@ class WizardHeader extends React.Component{
 
 class WizardBody extends React.Component{
 
+	componentWillReceiveProps(props){
+		if(!_.isEqual(props.step, this.props.step)){
+			this.wizBody.scrollTo({ x: this.getScrollPos(props.step) }, 2);
+		}
+	}
+
+	getScrollPos = (step) => {
+		let scrollTo = 0;
+
+		for(let i = 0;i<step;i++){
+			scrollTo += Dimensions.get('window').width
+		}
+
+		return scrollTo;
+	}
+
 	render(){
 
 		const { components } = this.props;
 
 		return(
-			<View style={ styles.flexRow }>
+			<ScrollView 
+				style={{ flex: 1 }}
+				ref={ ref => this.wizBody = ref }
+				horizontal={ true } 
+				scrollEnabled={ false }
+				pagingEnabled={ true }
+				showsHorizontalScrollIndicator={ false }>
 				{ components.map((c,i) => {
 					return <View 
 						key={`c-${i}`} 
-						style={ styles.wizardPageWrapper }>
+						style={ styles.bodyItem }>
 						{ c }
 					</View>
 				})}
-			</View>
+			</ScrollView>
 		)
 	}
 }
@@ -226,7 +239,14 @@ const styles = StyleSheet.create({
 	},
 	body: {
 		flex: 1,
-		backgroundColor: "#0f0"
+		alignItems: "center",
+		justifyContent: "center"
+	},
+	bodyItem: {
+		flex: 1,
+		width: Dimensions.get('window').width,
+		alignItems: "center",
+		justifyContent: "center"
 	},
 	footer:{
 		height: 50,
@@ -237,33 +257,8 @@ const styles = StyleSheet.create({
 	footerButton: {
 		padding: 10
 	},
-
-
-	wizardWrapper: {
-		flex: 1,
-		backgroundColor: "#f00"
-	},
-	wizardPageWrapper: {
-		width: "30%"
-	},
-	stepsWrapper: {
-
-	},
-	stepsContent: {
-
-	},
-	
-	flexRow: {
-		flexDirection: "row",
-		alignItems: "baseline",
-	},
-	flexCenter: {
-		justifyContent: "center",
-		alignItems: "center"
-	},
-	spaceBetween: {
-		width: "40%",
-		justifyContent: "space-between"
+	hidden: {
+		opacity: 0
 	}
 })
 

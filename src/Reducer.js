@@ -64,6 +64,7 @@ const appReducers = combineReducers({
 	app,
 	nav,
 	edtr: require('./modules/e-dtr/reducer'),
+	expenses: require('./modules/expenses/reducer')
 })
 
 export default appReducers;

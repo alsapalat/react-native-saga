@@ -1,20 +1,32 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { View, Text, Image, StyleSheet, Picker, ScrollView, Modal, Button, ViewPagerAndroid, Platform, Dimensions } from 'react-native';
 import { TabNavigator } from 'react-navigation';
 import { ActionButton } from '../../generic/component/Button';
 import styles from '../../generic/asset/styles';
 import Wizard from '../component/Wizard';
+import { Ionicons } from '@expo/vector-icons';
+import ExpenseCategoryContainer from './ExpenseCategoryContainer';
+import _ from 'lodash';
 
 class SummaryContainer extends React.Component{
 
 	state = {
-		_showModal: false,
-		step: 0
+		_showModal: false
 	}
 
 	handleChangePicker = (key) => (value, index) => {
 		this.setState({
 			[key]: value
+		})
+	}
+
+	handleAdd = () => {
+		const { dispatch } = this.props;
+		this.handleToggleModal(true)();
+		dispatch({
+			type: "EXPENSES/select",
+			data: {}
 		})
 	}
 
@@ -24,13 +36,25 @@ class SummaryContainer extends React.Component{
 		})
 	}
 
+	handleSubmitModal = () => {
+		console.log("submit");
+	}
+
 	handleChangeStep = ({ nextStep }) => {
-		this.setState({
-			step: nextStep
+		const { dispatch } = this.props;
+		dispatch({
+			type: "EXPENSES/include",
+			data: {
+				step: nextStep
+			}
 		})
 	}
 
 	render(){
+
+		const { selected } = this.props;
+
+		const { category, description } = selected;
 
 		return(
 			<View style={ [styles.containerWrapper, myStyles.wrapper ] }>
@@ -46,7 +70,7 @@ class SummaryContainer extends React.Component{
 
 					</ScrollView>
 				</View>
-				<ActionButton onPress={ this.handleToggleModal(true) } />
+				<ActionButton onPress={ this.handleAdd } />
 
 				<Modal
 					animationType="slide"
@@ -57,34 +81,23 @@ class SummaryContainer extends React.Component{
 						<Wizard 
 							steps={[
 								{
-									label: "Step 1 - Instructions",
+									label: category ? `Step 1 - ${category.name}`: "Step 1 - Select Category",
 									index: 0,
 									component: <ExpenseCategoryContainer /> 
 								},{
-									label: "Step 2 - Instructions",
+									label: description ? `Step 2 - ${category.name}` : "Step 2 - Set Description",
 									index: 1,
 									component: <ExpenseDescriptionContainer />
 								},{
-									label: "Step 3 - Instructions",
+									label: "Step 3 - Summary",
 									index: 2,
-									component: <ExpenseSummaryContainer />
-								},{
-									label: "Step 4 - Instructions",
-									index: 3,
-									component: <ExpenseCategoryContainer /> 
-								},{
-									label: "Step 5 - Instructions",
-									index: 4,
-									component: <ExpenseDescriptionContainer />
-								},{
-									label: "Step 6 - Instructions",
-									index: 5,
 									component: <ExpenseSummaryContainer />
 								}
 							]}
-							step={ this.state.step }
+							onCancel={ this.handleToggleModal(false) }
+							onSubmit={ this.handleSubmitModal }
+							step={ selected.step || 0 }
 							onChangeStep={ this.handleChangeStep }/>
-						<Button title="Close Modal" onPress={ this.handleToggleModal(false) }/>
 					</View>
 				</Modal>
 			</View>
@@ -92,18 +105,31 @@ class SummaryContainer extends React.Component{
 	}
 }
 
-class ExpenseCategoryContainer extends React.Component{
+class ExpenseDescriptionContainer extends React.Component{
 	render(){
 		return(
-			<View><Text>Category</Text></View>
+			<View>
+				<View>
+					<Text>Description</Text>
+				</View>
+				<View>
+					<Text>Amount</Text>
+				</View>
+			</View>
 		)
 	}
 }
 
-class ExpenseDescriptionContainer extends React.Component{
+class Selector extends React.Component{
 	render(){
 		return(
-			<View><Text>Description</Text></View>
+			<View>
+				<ScrollView>
+					<View>
+						<Text>Item 1</Text>
+					</View>
+				</ScrollView>
+			</View>
 		)
 	}
 }
@@ -153,10 +179,41 @@ const myStyles = StyleSheet.create({
 	spaceBetween: {
 		width: "40%",
 		justifyContent: "space-between"
+	},
+	gridWrapper:{
+		flexDirection: 'row',
+        flexWrap: 'wrap',
+	},
+	gridItem: {
+		padding: 4,
+        width: "50%"
+	},
+
+	categoryWrapper: {
+		backgroundColor: '#34495e',
+		justifyContent: "center",
+		alignItems: "center",
+		padding: 10,
+		borderRadius: 4,
+		borderWidth: 1,
+		borderColor: "rgba(0,0,0,0.2)",
+		overflow: "hidden"
+	},
+	categoryText: {
+		color: "#fff",
+		fontWeight: "bold",
+		fontSize: 12
 	}
 })
 
-export default SummaryContainer;
+const mapStateToProps = ({ expenses }) => {
+
+	return {
+		selected: expenses.selected
+	}
+}
+
+export default connect(mapStateToProps)(SummaryContainer);
 
 /*
 
